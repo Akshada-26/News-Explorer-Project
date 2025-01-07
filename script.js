@@ -1,4 +1,4 @@
-// Sample news data
+
 const newsData = [
   {
     category: "business",
@@ -352,86 +352,95 @@ const newsData = [
   },
 ];
 
-function formatDate(dateStr) {
-  const [date, time] = dateStr.split(", ");
-  const [day, month, year] = date.split("/");
-  return `${year}-${month}-${day}T${time}`;
+
+function parseDate(dateString) {
+  const [date, time] = dateString.split(', ');
+  const [day, month, year] = date.split('/');
+  const [hour, minute, second] = time.split(':');
+  return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
 }
 
-
-newsData.forEach(news => {
-  news.dateAndTime = formatDate(news.dateAndTime);
-});
-
-
-newsData.sort((a, b) => new Date(b.dateAndTime) - new Date(a.dateAndTime));
+let visibleArticles = 7;
+let filteredNews = [...newsData];
+let currentCategory = "all"; // Default category filter
 
 const newsCardsContainer = document.getElementById("news-cards");
 const showMoreBtn = document.getElementById("show-more-btn");
 const searchBar = document.getElementById("search-bar");
-const categoryButtons = document.querySelectorAll(".category-button");
-
-let visibleArticles = 7; // Initially show 7 articles
-let currentCategory = "all"; // Default category
-
 
 function renderNewsCards() {
-  newsCardsContainer.innerHTML = ""; // Clear existing cards
-  const filteredNews = newsData.filter(news => {
-    // Filter by category
-    if (currentCategory === "all") return true;
-    return news.category === currentCategory;
-  });
+  // Sort filtered news by date in descending order
+  filteredNews.sort((a, b) => parseDate(b.dateAndTime) - parseDate(a.dateAndTime));
 
-  
-  const searchQuery = searchBar.value.toLowerCase();
-  const finalNews = filteredNews.filter(news => {
-    return (
-      news.title.toLowerCase().includes(searchQuery) ||
-      news.content.toLowerCase().includes(searchQuery)
-    );
-  });
-
-  finalNews.slice(0, visibleArticles).forEach((news) => {
+  newsCardsContainer.innerHTML = "";
+  filteredNews.slice(0, visibleArticles).forEach(news => {
     const card = document.createElement("div");
     card.classList.add("news-card");
+    
+    const highlightedTitle = highlightSearchTerm(news.title);
+    const highlightedContent = highlightSearchTerm(news.content);
+    
     card.innerHTML = `
-      <h3>${news.title}</h3>
-      <p>${news.content}</p>
+      <h3>${highlightedTitle}</h3>
+      <p>${highlightedContent}</p>
       <p class="date">${news.dateAndTime}</p>
-      <div class="category">${news.category}</div> <!-- Category displayed at the bottom -->
+      <p class="category">${news.category}</p>
     `;
+    
     newsCardsContainer.appendChild(card);
   });
 
-  
-  if (visibleArticles >= finalNews.length) {
+  if (visibleArticles >= filteredNews.length) {
     showMoreBtn.style.display = "none";
   } else {
     showMoreBtn.style.display = "block";
   }
 }
 
+function highlightSearchTerm(text) {
+  const searchTerm = searchBar.value.trim();
+  if (searchTerm) {
+    const regex = new RegExp(`(${searchTerm})`, "gi");
+    return text.replace(regex, '<span class="highlight">$1</span>');
+  }
+  return text;
+}
 
 showMoreBtn.addEventListener("click", () => {
-  visibleArticles += 7; // Show 7 more articles
+  visibleArticles += 7;
   renderNewsCards();
 });
 
+searchBar.addEventListener("input", debounce(function() {
+  filterNewsBySearch();
+}, 500));
 
-searchBar.addEventListener("input", () => {
+function filterNewsBySearch() {
+  const searchTerm = searchBar.value.toLowerCase();
+  filteredNews = newsData.filter(news => 
+    news.title.toLowerCase().includes(searchTerm) || 
+    news.content.toLowerCase().includes(searchTerm)
+  );
+  visibleArticles = 7; 
   renderNewsCards();
-});
+}
 
+function debounce(func, wait) {
+  let timeout;
+  return function() {
+    clearTimeout(timeout);
+    timeout = setTimeout(func, wait);
+  };
+}
 
-categoryButtons.forEach(button => {
-  button.addEventListener("click", (e) => {
-    currentCategory = e.target.getAttribute("data-category");
-    categoryButtons.forEach(btn => btn.classList.remove("active"));
-    e.target.classList.add("active");
+document.querySelectorAll('.category-button').forEach(button => {
+  button.addEventListener('click', () => {
+    currentCategory = button.getAttribute('data-category');
+    filteredNews = currentCategory === "all" ? [...newsData] : newsData.filter(news => news.category === currentCategory);
+    visibleArticles = 7;
+    searchBar.value = ''; 
     renderNewsCards();
   });
 });
-
 
 renderNewsCards();
