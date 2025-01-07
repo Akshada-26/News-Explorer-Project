@@ -3,24 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>News Dashboard</title>
+  <title>News Feed</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>Top Stories for You</h1>
-      <div class="categories">
-        <button>All</button>
-        <button>Business</button>
-        <button>Politics</button>
-        <button>Sports</button>
-        <button>Entertainment</button>
-      </div>
-    </header>
-    <div class="news-grid" id="newsGrid">
+    <input type="text" id="search-bar" class="search-bar" placeholder="Search for news..." />
+    <h1>Top Stories For You</h1>
+   
+    
+   
+    <div id="category-filter" class="category-filter">
+      <button class="category-button" data-category="all">All</button>
+      <button class="category-button" data-category="politics">Politics</button>
+      <button class="category-button" data-category="business">Business</button>
+      <button class="category-button" data-category="sport">Sports</button>
+      <button class="category-button" data-category="entertainment">Entertainment</button>
+      <button class="category-button" data-category="tech">Technology</button>
+      
     </div>
+    
+    <div id="news-cards" class="news-cards"></div>
+    <button id="show-more-btn" class="show-more-btn">Show More</button>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
