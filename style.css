@@ -1,98 +1,121 @@
-body {
-  font-family: Arial, sans-serif;
+* {
   margin: 0;
   padding: 0;
-  background-color: #f9f9f9;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
 }
 
 .container {
-  width: 90%;
   max-width: 1200px;
-  margin: 0 auto;
-  padding-top: 20px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
 }
 
 .search-bar {
   width: 100%;
-  padding: 10px;
-  font-size: 16px;
+  padding: 12px 15px;
+  font-size: 1.1em;
   margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
 }
 
 h1 {
   text-align: center;
+  font-size: 2em;
   margin-bottom: 20px;
 }
 
 .category-filter {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .category-button {
   padding: 10px 20px;
-  margin: 0 5px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 20px;
   cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.category-button:hover {
-  background-color: #0056b3;
+.category-button.highlighted {
+  background-color: #333;
+  color: #fff;
 }
 
 .news-cards {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .news-card {
-  margin-bottom: 20px;
+  background-color: #fff;
   padding: 15px;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: white;
-  width: 100%;
-  max-width: 700px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .news-card h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 1.2em;
+  color: #333;
 }
 
 .news-card p {
-  font-size: 14px;
-  margin: 10px 0;
+  font-size: 1em;
+  color: #666;
+  margin-bottom: 15px;
 }
 
 .news-card .date {
-  font-size: 12px;
-  color: gray;
+  font-size: 0.9em;
+  color: #888;
+}
+
+.news-card .category {
+  font-size: 0.9em;
+  color: #444;
+  margin-top: 10px;
 }
 
 .highlight {
-  background-color: yellow;
+  color: #ff6347; 
 }
 
 .show-more-btn {
-  display: block;
-  width: 200px;
-  margin: 20px auto;
-  padding: 10px;
-  background-color: #28a745;
+  display: inline-block;
+  padding: 12px 25px;
+  margin: 0 auto;
+  background-color: #007bff;
   color: white;
+  font-size: 1em;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s;
 }
 
 .show-more-btn:hover {
-  background-color: #218838;
+  background-color: #0056b3;
+}
+
+.show-more-btn:focus {
+  outline: none;
 }

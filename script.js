@@ -362,14 +362,15 @@ function parseDate(dateString) {
 
 let visibleArticles = 7;
 let filteredNews = [...newsData];
-let currentCategory = "all"; // Default category filter
+let selectedCategories = new Set(); 
+selectedCategories.add("all"); 
 
 const newsCardsContainer = document.getElementById("news-cards");
 const showMoreBtn = document.getElementById("show-more-btn");
 const searchBar = document.getElementById("search-bar");
 
 function renderNewsCards() {
-  // Sort filtered news by date in descending order
+  
   filteredNews.sort((a, b) => parseDate(b.dateAndTime) - parseDate(a.dateAndTime));
 
   newsCardsContainer.innerHTML = "";
@@ -421,7 +422,7 @@ function filterNewsBySearch() {
     news.title.toLowerCase().includes(searchTerm) || 
     news.content.toLowerCase().includes(searchTerm)
   );
-  visibleArticles = 7; 
+  visibleArticles = 7;
   renderNewsCards();
 }
 
@@ -435,10 +436,35 @@ function debounce(func, wait) {
 
 document.querySelectorAll('.category-button').forEach(button => {
   button.addEventListener('click', () => {
-    currentCategory = button.getAttribute('data-category');
-    filteredNews = currentCategory === "all" ? [...newsData] : newsData.filter(news => news.category === currentCategory);
+    const category = button.getAttribute('data-category');
+
+    if (category === "all") {
+      selectedCategories.clear();
+      selectedCategories.add("all");
+      document.querySelectorAll('.category-button').forEach(btn => {
+        btn.classList.remove('highlighted');
+        if (btn.getAttribute('data-category') === "all") {
+          btn.classList.add('highlighted');
+        }
+      });
+    } else {
+      if (selectedCategories.has(category)) {
+        selectedCategories.delete(category);
+      } else {
+        selectedCategories.add(category);
+      }
+
+      if (selectedCategories.has("all")) {
+        selectedCategories.delete("all");
+        document.querySelector("[data-category='all']").classList.remove("highlighted");
+      }
+      button.classList.toggle("highlighted");
+    }
+
+    filteredNews = newsData.filter(news => 
+      selectedCategories.has("all") || selectedCategories.has(news.category)
+    );
     visibleArticles = 7;
-    searchBar.value = ''; 
     renderNewsCards();
   });
 });
